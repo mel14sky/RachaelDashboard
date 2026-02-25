@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rachael's Dashboard</title>
-    
     <link rel="stylesheet" href="style.css">
-    
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <audio controls>
+        <source src="meow.mp3" type="audio/mpeg">
+    </audio>
 </head>
 <body>
 
@@ -20,10 +21,14 @@
             <img src="diet_coke.png" alt="Diet Coke" class="coke-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Diet_Coke_logo.svg/1200px-Diet_Coke_logo.svg.png'">
             <div class="counter-text">Cokes consumed: <span id="cokeCount">0</span></div>
             <button onclick="increaseCoke()">+1 Diet Coke</button>
+            <audio controls>
+                <source src="fallout-drink.mp3" type="audio/mpeg">
+            </audio>
         </div>
 
         <div class="box" id="box2">
             <div id="regions_div" style="width: 100%; height: 80%;"></div>
+            <p>Countries I've visted</p>
             <div class="map-controls">
                 <select id="countrySelect"></select>
                 <button onclick="updateMap()">Confirm</button>
