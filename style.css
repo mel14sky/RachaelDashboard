@@ -11,6 +11,17 @@
   cursor: pointer;
 }
 
+.social-icon {
+    width: 30px;      
+    height: auto;
+    border-radius: 8px; 
+    transition: transform 0.2s;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
 .button::before {
   content: "";
   display: block;
