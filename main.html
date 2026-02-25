@@ -19,7 +19,7 @@
         
         <div class="box" id="box1">
             <img src="diet_coke.png" alt="Diet Coke" class="coke-img">
-            <div class="counter-text">Cokes consumed: <span id="cokeCount">0</span></div>
+            <div class="counter-text">Cokes consumed: <span id="cokeCounter">0</span></div>
             <button onclick="increaseCoke()">+1 Diet Coke</button>
             <audio id="cokesound">
                 <source src="drink.mp3" type="audio/mpeg">
@@ -47,17 +47,44 @@
             title="Flappy Plane Game">
         </iframe>
         </div>
+
+        <div class="box" id="box5">
+            <img src="frog.png" alt="frog" class="frog-img">
+            <div class="counter-text">Shags Had: <span id="shagCounter">0</span></div>
+            <button onclick="increaseFrog()">+1 Shag</button>
+            <audio id="ahhhh">
+                <source src="sherlock.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <div class="box" id="box6">
+            <iframe 
+                src="https://grottomap.org/en/#close" 
+                title="GrottoMap" 
+                style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+                allow="geolocation">
+            </iframe>
+        </div>
 </div>
 
     </div>
 
     <script>
         // --- BOX 1 SCRIPT: Diet Coke Counter ---
-        let count = 0;
+        let cokeCount = 0;
         function increaseCoke() {
-            count++;
-            document.getElementById('cokeCount').innerText = count;
+            cokeCount++;
+            document.getElementById('cokeCounter').innerText = cokeCount;
             const sound = document.getElementById('cokesound');
+            sound.currentTime = 0; 
+            sound.play();
+        }
+
+        let count = 0;
+        function increaseFrog(){
+            count++;
+            document.getElementById('shagCounter').innerText = cokeCount;
+            const sound = document.getElementById('ahhhh');
             sound.currentTime = 0; 
             sound.play();
         }
@@ -121,7 +148,10 @@
 
         document.body.addEventListener('click', function() {
             const audio = document.getElementById('MEOW');
+            if (!hasplayed){
             audio.play();
+            hasplayed = true;
+            }
         }, { once: true });
     </script>
 </body>
