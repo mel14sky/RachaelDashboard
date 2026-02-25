@@ -20,8 +20,10 @@
         <div class="box" id="box1">
             <img src="diet_coke.png" alt="Diet Coke" class="coke-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Diet_Coke_logo.svg/1200px-Diet_Coke_logo.svg.png'">
             <div class="counter-text">Cokes consumed: <span id="cokeCount">0</span></div>
+            
             <button onclick="increaseCoke()">+1 Diet Coke</button>
-            <audio controls>
+
+            <audio id="cokeSound">
                 <source src="fallout-drink.mp3" type="audio/mpeg">
             </audio>
         </div>
