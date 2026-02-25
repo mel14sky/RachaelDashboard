@@ -25,16 +25,7 @@
         <div class="box" id="box2">
             <div id="regions_div" style="width: 100%; height: 80%;"></div>
             <div class="map-controls">
-                <select id="countrySelect">
-                    <option value="US">United States</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="CA">Canada</option>
-                    <option value="AU">Australia</option>
-                    <option value="FR">France</option>
-                    <option value="BR">Brazil</option>
-                    <option value="JP">Japan</option>
-                    <option value="ZA">South Africa</option>
-                </select>
+                <select id="countrySelect"></select>
                 <button onclick="updateMap()">Confirm</button>
             </div>
         </div>
@@ -45,7 +36,7 @@
 
         <div class="box" id="box4">
             <div class="ig-container">
-                <a href="https://www.instagram.com/rachelapajak target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-size: 20px; display: flex; flex-direction: column; align-items: center;">
+                <a href="https://www.instagram.com/rachelapajak" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-size: 20px; display: flex; flex-direction: column; align-items: center;">
                     <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor" style="margin-bottom: 10px;">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                     </svg>
@@ -64,20 +55,43 @@
             document.getElementById('cokeCount').innerText = count;
         }
 
-        // --- BOX 2 SCRIPT: Google GeoChart ---
-        google.charts.load('current', {
-            'packages':['geochart'],
-        });
+        // --- BOX 2 SCRIPT: Travel Map Tracker ---
+        // Complete list of ISO country codes and names
+        const allCountries = {
+            "AF": "Afghanistan", "AL": "Albania", "DZ": "Algeria", "AD": "Andorra", "AO": "Angola", "AG": "Antigua and Barbuda", "AR": "Argentina", "AM": "Armenia", "AU": "Australia", "AT": "Austria", "AZ": "Azerbaijan", "BS": "Bahamas", "BH": "Bahrain", "BD": "Bangladesh", "BB": "Barbados", "BY": "Belarus", "BE": "Belgium", "BZ": "Belize", "BJ": "Benin", "BT": "Bhutan", "BO": "Bolivia", "BA": "Bosnia and Herzegovina", "BW": "Botswana", "BR": "Brazil", "BN": "Brunei", "BG": "Bulgaria", "BF": "Burkina Faso", "BI": "Burundi", "CV": "Cabo Verde", "KH": "Cambodia", "CM": "Cameroon", "CA": "Canada", "CF": "Central African Republic", "TD": "Chad", "CL": "Chile", "CN": "China", "CO": "Colombia", "KM": "Comoros", "CG": "Congo", "CD": "Congo (Democratic Republic)", "CR": "Costa Rica", "HR": "Croatia", "CU": "Cuba", "CY": "Cyprus", "CZ": "Czechia", "DK": "Denmark", "DJ": "Djibouti", "DM": "Dominica", "DO": "Dominican Republic", "EC": "Ecuador", "EG": "Egypt", "SV": "El Salvador", "GQ": "Equatorial Guinea", "ER": "Eritrea", "EE": "Estonia", "SZ": "Eswatini", "ET": "Ethiopia", "FJ": "Fiji", "FI": "Finland", "FR": "France", "GA": "Gabon", "GM": "Gambia", "GE": "Georgia", "DE": "Germany", "GH": "Ghana", "GR": "Greece", "GD": "Grenada", "GT": "Guatemala", "GN": "Guinea", "GW": "Guinea-Bissau", "GY": "Guyana", "HT": "Haiti", "HN": "Honduras", "HU": "Hungary", "IS": "Iceland", "IN": "India", "ID": "Indonesia", "IR": "Iran", "IQ": "Iraq", "IE": "Ireland", "IL": "Israel", "IT": "Italy", "JM": "Jamaica", "JP": "Japan", "JO": "Jordan", "KZ": "Kazakhstan", "KE": "Kenya", "KI": "Kiribati", "KP": "North Korea", "KR": "South Korea", "KW": "Kuwait", "KG": "Kyrgyzstan", "LA": "Laos", "LV": "Latvia", "LB": "Lebanon", "LS": "Lesotho", "LR": "Liberia", "LY": "Libya", "LI": "Liechtenstein", "LT": "Lithuania", "LU": "Luxembourg", "MG": "Madagascar", "MW": "Malawi", "MY": "Malaysia", "MV": "Maldives", "ML": "Mali", "MT": "Malta", "MH": "Marshall Islands", "MR": "Mauritania", "MU": "Mauritius", "MX": "Mexico", "FM": "Micronesia", "MD": "Moldova", "MC": "Monaco", "MN": "Mongolia", "ME": "Montenegro", "MA": "Morocco", "MZ": "Mozambique", "MM": "Myanmar", "NA": "Namibia", "NR": "Nauru", "NP": "Nepal", "NL": "Netherlands", "NZ": "New Zealand", "NI": "Nicaragua", "NE": "Niger", "NG": "Nigeria", "MK": "North Macedonia", "NO": "Norway", "OM": "Oman", "PK": "Pakistan", "PW": "Palau", "PA": "Panama", "PG": "Papua New Guinea", "PY": "Paraguay", "PE": "Peru", "PH": "Philippines", "PL": "Poland", "PT": "Portugal", "QA": "Qatar", "RO": "Romania", "RU": "Russia", "RW": "Rwanda", "KN": "Saint Kitts and Nevis", "LC": "Saint Lucia", "VC": "Saint Vincent and the Grenadines", "WS": "Samoa", "SM": "San Marino", "ST": "Sao Tome and Principe", "SA": "Saudi Arabia", "SN": "Senegal", "RS": "Serbia", "SC": "Seychelles", "SL": "Sierra Leone", "SG": "Singapore", "SK": "Slovakia", "SI": "Slovenia", "SB": "Solomon Islands", "SO": "Somalia", "ZA": "South Africa", "SS": "South Sudan", "ES": "Spain", "LK": "Sri Lanka", "SD": "Sudan", "SR": "Suriname", "SE": "Sweden", "CH": "Switzerland", "SY": "Syria", "TJ": "Tajikistan", "TZ": "Tanzania", "TH": "Thailand", "TL": "Timor-Leste", "TG": "Togo", "TO": "Tonga", "TT": "Trinidad and Tobago", "TN": "Tunisia", "TR": "Turkey", "TM": "Turkmenistan", "TV": "Tuvalu", "UG": "Uganda", "UA": "Ukraine", "AE": "United Arab Emirates", "GB": "United Kingdom", "US": "United States", "UY": "Uruguay", "UZ": "Uzbekistan", "VU": "Vanuatu", "VE": "Venezuela", "VN": "Vietnam", "YE": "Yemen", "ZM": "Zambia", "ZW": "Zimbabwe"
+        };
+
+        // Populate the dropdown menu
+        const selectMenu = document.getElementById('countrySelect');
+        for (const [code, name] of Object.entries(allCountries)) {
+            let option = document.createElement('option');
+            option.value = code;
+            option.text = name;
+            selectMenu.appendChild(option);
+        }
+
+        // Initialize Google Charts
+        google.charts.load('current', { 'packages':['geochart'] });
         google.charts.setOnLoadCallback(drawRegionsMap);
 
-        let chart, data, options;
-        let mapDataArray = [['Country', 'Selected']]; 
+        let chart, options;
+        
+        // This Set will store all the countries you've visited
+        let visitedCountries = new Set(); 
 
         function drawRegionsMap() {
-            data = google.visualization.arrayToDataTable(mapDataArray);
+            // Rebuild the data array every time starting with the headers
+            let mapDataArray = [['Country', 'Visited']]; 
+            
+            // Loop through our saved Set of visited countries and add them to the array
+            visitedCountries.forEach(country => {
+                mapDataArray.push([country, 1]); // 1 turns it yellow
+            });
+
+            let data = google.visualization.arrayToDataTable(mapDataArray);
             
             options = {
-                colorAxis: {colors: ['#e0e0e0', '#ffcc00']}, 
+                colorAxis: {colors: ['#e0e0e0', '#ffcc00']}, // Banana yellow for visited!
                 backgroundColor: '#ffffff',
                 datalessRegionColor: '#f4f4f9',
                 defaultColor: '#f5f5f5',
@@ -91,13 +105,11 @@
         function updateMap() {
             const selectedCountry = document.getElementById('countrySelect').value;
             
-            mapDataArray = [
-                ['Country', 'Selected'],
-                [selectedCountry, 1] 
-            ];
+            // Add the new country to your running list
+            visitedCountries.add(selectedCountry);
             
-            data = google.visualization.arrayToDataTable(mapDataArray);
-            chart.draw(data, options);
+            // Redraw the map to show the updated list
+            drawRegionsMap();
         }
     </script>
 </body>
