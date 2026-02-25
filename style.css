@@ -3,7 +3,6 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
     background: #f4f7f6; 
     padding: 20px; 
-    color: #333; 
 }
 
 .container-main { 
@@ -15,88 +14,56 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
 }
 
-/* THE FIX: Forced 4-Quarter Grid */
 .dashboard-grid {
     display: grid;
-    /* This ensures exactly two columns that cannot grow wider than 50% */
     grid-template-columns: repeat(2, minmax(0, 1fr)); 
-    grid-gap: 20px;
+    grid-gap: 25px;
     margin-top: 20px;
 }
 
-/* Quarter Cards */
+/* The Quarter Card */
 .quarter-card {
     background: #fff;
-    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 500px; 
+}
+
+.quarter-card h3 {
+    font-size: 1.25rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+/* THE FIX: The Universal Bordered Box */
+.content-box {
+    width: 100%;
+    height: 100%;
+    background: #fcfcfc;
+    border: 2px solid #e0e0e0;
     border-radius: 12px;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 450px; /* Fixed height helps keep things uniform */
+    padding: 15px;
     overflow: hidden;
-    text-align: center;
-    box-sizing: border-box;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
-/* THE FIX: YouTube size */
-iframe { 
-    width: 100%; 
-    height: 100%; 
-    max-height: 300px; /* Prevents video from pushing the card too tall */
-    border-radius: 8px; 
-    border: none;
-}
+/* Component Sizing */
+iframe { width: 100%; height: 100%; border-radius: 6px; }
 
-#world-map { 
-    width: 100%; 
-    height: 250px; 
-    margin-top: 10px;
-}
+#world-map { width: 100%; height: 280px; margin-top: 10px; }
 
-/* THE FIX: Instagram Logo Size */
-.social-icon { 
-    width: 120px;  /* Set a specific width */
-    height: 120px; /* Set a specific height */
-    object-fit: contain; /* Ensures the logo isn't squished */
-    transition: transform 0.2s ease-in-out; 
-}
+.social-icon { width: 120px; height: 120px; object-fit: contain; }
 
-.social-icon:hover { 
-    transform: scale(1.1); 
-}
-
-/* Diet Coke Counter */
-.coke-card {
-    background: #fdf2f2 !important; 
-}
-
-.coke-display { 
-    font-size: 5rem; 
-    font-weight: bold; 
-    color: #e74c3c; 
-    line-height: 1;
-    margin: 10px 0; 
-}
+.coke-display { font-size: 5rem; font-weight: bold; color: #e74c3c; margin: 0; }
 
 .coke-btn { 
-    background: #2c3e50; 
-    color: white; 
-    border: none; 
-    padding: 12px 25px; 
-    border-radius: 50px; 
-    font-weight: 600;
-    cursor: pointer; 
+    background: #2c3e50; color: white; border: none; 
+    padding: 12px 25px; border-radius: 50px; cursor: pointer;
 }
 
-/* Mobile View: Stack them when the screen is too narrow */
-@media (max-width: 800px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    .quarter-card {
-        height: auto;
-        min-height: 350px;
-    }
-}
+select { width: 100%; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
