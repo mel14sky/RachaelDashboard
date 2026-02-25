@@ -6,7 +6,7 @@
     <title>Rachael's Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <audio controls>
+    <audio autoplay loop id="MEOW">
         <source src="meow.mp3" type="audio/mpeg">
     </audio>
 </head>
@@ -18,13 +18,11 @@
     <div class="dashboard-container">
         
         <div class="box" id="box1">
-            <img src="diet_coke.png" alt="Diet Coke" class="coke-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Diet_Coke_logo.svg/1200px-Diet_Coke_logo.svg.png'">
+            <img src="diet_coke.png" alt="Diet Coke" class="coke-img">
             <div class="counter-text">Cokes consumed: <span id="cokeCount">0</span></div>
-            
             <button onclick="increaseCoke()">+1 Diet Coke</button>
-
-            <audio id="cokeSound">
-                <source src="fallout-drink.mp3" type="audio/mpeg">
+            <audio id="cokesound">
+                <source src="drink.mp3" type="audio/mpeg">
             </audio>
         </div>
 
@@ -42,10 +40,14 @@
         </div>
 
         <div class="box" id="box4">
-            <div class="ig-container">
-                <p> flappybird </p>
-            </div>
+        <div class="ig-container" style="width: 100%; height: 100%;">
+        <iframe 
+            src="flappy.html" 
+            style="width: 100%; height: 100%; border: none; border-radius: 8px;" 
+            title="Flappy Plane Game">
+        </iframe>
         </div>
+</div>
 
     </div>
 
@@ -55,6 +57,9 @@
         function increaseCoke() {
             count++;
             document.getElementById('cokeCount').innerText = count;
+            const sound = document.getElementById('cokesound');
+            sound.currentTime = 0; 
+            sound.play();
         }
 
         // --- BOX 2 SCRIPT: Travel Map Tracker ---
@@ -113,6 +118,11 @@
             // Redraw the map to show the updated list
             drawRegionsMap();
         }
+
+        document.body.addEventListener('click', function() {
+            const audio = document.getElementById('MEOW');
+            audio.play();
+        }, { once: true });
     </script>
 </body>
 </html>

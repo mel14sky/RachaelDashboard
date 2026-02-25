@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Plane</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #333;
+            font-family: 'Arial', sans-serif;
+        }
+
+        canvas {
+            border: 2px solid #000;
+            display: block;
+            background-color: #70c5ce; /* Fallback color if bg.png fails */
+        }
+
+        #ui-layer {
+            position: absolute;
+            text-align: center;
+            color: white;
+            pointer-events: none; /* Let clicks pass through to canvas */
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <h1 id="score">0</h1>
+        <h2 id="start-msg">Click or Press Space to Start</h2>
+    </div>
+
+    <canvas id="birdCanvas" width="320" height="480"></canvas>
+
+    <script>
+        // --- CONFIGURATION ---
+        const canvas = document.getElementById("birdCanvas");
+        const ctx = canvas.getContext("2d");
+        
+        // Game variables
+        let frames = 0;
+        let score = 0;
+        let gameState = "START"; // START, PLAYING, GAMEOVER
+        const DEGREE = Math.PI / 180;
+
+        // --- ASSET LOADING ---
+        const sprite = new Image();
+        // We are using the user requested file names
+        const bgImg = new Image();
+        bgImg.src = "bg.png";
+
+        const planeImg = new Image();
+        planeImg.src = "plane.png";
+
+        const cheeseImg = new Image();
+        cheeseImg.src = "cheese.png";
+
+        // Sounds (Optional - add .wav files if you want sound)
+        const scoreSound = new Audio();
+        // scoreSound.src = "audio/sfx_point.wav"; 
+
+        // --- OBJECTS ---
+
+        const state = {
+            current: 0,
+            getReady: 0,
+            game: 1,
+            over: 2
+        }
+
+        // CONTROL HANDLER
+        document.addEventListener("keydown", function(evt) {
+            if (evt.code === "Space") {
+                action();
+            }
+        });
+        
+        canvas.addEventListener("click", action);
+
+        function action() {
+            switch (state.current) {
+                case state.getReady:
+                    state.current = state.game;
+                    document.getElementById("start-msg").classList.add("hidden");
+                    break;
+                case state.game:
+                    plane.flap();
+                    break;
+                case state.over:
+                    resetGame();
+                    break;
+            }
+        }
+
+        function resetGame() {
+            plane.speed = 0;
+            plane.rotation = 0;
+            plane.y = 150;
+            pipes.position = [];
+            score = 0;
+            frames = 0;
+            state.current = state.getReady;
+            document.getElementById("score").innerText = score;
+            document.getElementById("start-msg").innerText = "Click to Start";
+            document.getElementById("start-msg").classList.remove("hidden");
+        }
+
+        // BACKGROUND OBJECT
+        const bg = {
+            x: 0, 
+            y: 0,
+            w: 320,
+            h: 480,
+            dx: 1, // Scroll speed
+            
+            draw: function() {
+                // If image loaded, draw it, otherwise draw color
+                if (bgImg.complete) {
+                    ctx.drawImage(bgImg, this.x, this.y, this.w, this.h);
+                    ctx.drawImage(bgImg, this.x + this.w, this.y, this.w, this.h);
+                } else {
+                    ctx.fillStyle = "#70c5ce";
+                    ctx.fillRect(0,0, canvas.width, canvas.height);
+                }
+            },
+            
+            update: function() {
+                if (state.current == state.game) {
+                    this.x = (this.x - this.dx) % (this.w);
+                }
+            }
+        }
+
+        // PLANE OBJECT
+        const plane = {
+            x: 50,
+            y: 150,
+            w: 34,
+            h: 26,
+            radius: 12, // For collision calculation
+            frame: 0,
+            gravity: 0.1,
+            jump: 4.6,
+            speed: 0,
+            rotation: 0,
+            
+            draw: function() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                if (planeImg.complete) {
+                    // Draw image centered
+                    ctx.drawImage(planeImg, -this.w/2, -this.h/2, this.w, this.h);
+                } else {
+                    // Fallback red square
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+                }
+                
+                ctx.restore();
+            },
+            
+            flap: function() {
+                this.speed = -this.jump;
+            },
+            
+            update: function() {
+                // Period refers to flapping animation speed (if we had spritesheet)
+                const period = state.current == state.getReady ? 10 : 5;
+                this.frame += frames % period == 0 ? 1 : 0;
+                this.frame = this.frame % 4; // Assuming 4 animation frames or just looping
+
+                if (state.current == state.getReady) {
+                    this.y = 150; // Hover in place
+                    this.rotation = 0 * DEGREE;
+                } else {
+                    this.speed += this.gravity;
+                    this.y += this.speed;
+
+                    // Floor Collision
+                    if (this.y + this.h/2 >= canvas.height) {
+                        this.y = canvas.height - this.h/2;
+                        state.current = state.over;
+                        document.getElementById("start-msg").innerText = "Game Over! Click to Restart";
+                        document.getElementById("start-msg").classList.remove("hidden");
+                    }
+
+                    // Rotation logic
+                    if (this.speed < this.jump/2) {
+                        this.rotation = -25 * DEGREE;
+                    } else {
+                        this.rotation += 5 * DEGREE;
+                        this.rotation = Math.max(-25 * DEGREE, Math.min(90 * DEGREE, this.rotation)); // Clamp
+                    }
+                }
+            }
+        }
+
+        // PIPES (CHEESE) OBJECT
+        const pipes = {
+            position: [],
+            w: 52,
+            h: 400, // Max height of pipe image
+            gap: 200, // Gap between top and bottom cheese
+            dx: 2,
+            
+            draw: function() {
+                for (let i = 0; i < this.position.length; i++) {
+                    let p = this.position[i];
+                    let topY = p.y;
+                    let bottomY = p.y + this.h + this.gap;
+                    
+                    if (cheeseImg.complete) {                        
+                        // Draw Top Obstacle
+                        ctx.drawImage(cheeseImg, p.x, topY - this.h, this.w, this.h); // shifting up
+                        
+                        // Draw Bottom Obstacle
+                        ctx.drawImage(cheeseImg, p.x, bottomY - this.h, this.w, this.h); 
+                    } else {
+                        // Fallback Green Box
+                        ctx.fillStyle = "green";
+                        ctx.fillRect(p.x, 0, this.w, p.y);
+                        ctx.fillRect(p.x, p.y + this.gap, this.w, canvas.height - (p.y + this.gap));
+                    }
+                }
+            },
+            
+            update: function() {
+                if (state.current !== state.game) return;
+
+                // Add new pipe every 100 frames
+                if (frames % 120 == 0) {
+                    this.position.push({
+                        x: canvas.width,
+                        y: Math.random() * (canvas.height - 150 - this.gap) + 50 // Random height
+                        // The y here represents the bottom of the TOP pipe
+                    });
+                }
+
+                for (let i = 0; i < this.position.length; i++) {
+                    let p = this.position[i];
+                    
+                    // Move pipes
+                    p.x -= this.dx;
+
+                    // Collision Detection
+                    let bottomPipeY = p.y + this.gap;
+                    
+                    // Logic: 
+                    // 1. Plane is within the pipe's horizontal area
+                    // 2. Plane is EITHER touching top pipe OR touching bottom pipe
+                    if (
+                        plane.x + plane.radius > p.x && 
+                        plane.x - plane.radius < p.x + this.w && 
+                        (plane.y - plane.radius < p.y || plane.y + plane.radius > bottomPipeY)
+                    ) {
+                        state.current = state.over;
+                        document.getElementById("start-msg").innerText = "Game Over! Click to Restart";
+                        document.getElementById("start-msg").classList.remove("hidden");
+                    }
+
+                    // Remove pipes that went off screen
+                    if (p.x + this.w <= 0) {
+                        this.position.shift();
+                        score += 1; // Increase score
+                        document.getElementById("score").innerText = score;
+                        i--;
+                    }
+                }
+            }
+        }
+
+        // --- GAME LOOP ---
+        function loop() {
+            // Update logic
+            bg.update();
+            plane.update();
+            pipes.update();
+            
+            bg.draw();
+            pipes.draw();
+            plane.draw();
+            
+            frames++;
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+
+    </script>
+</body>
+</html>
