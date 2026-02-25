@@ -4,85 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rachael's Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 
+    <h1>Well its not exactly brain surger is it?</h1>
 
-    <h1>Rachael's Dashboard</h1>
-    <p>Personalized tracking and favorites.</p>
+    <div class="dashboard-container">
+        
+        <div class="box" id="box1">
+            <img src="diet_coke.png" alt="Diet Coke" class="coke-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Diet_Coke_logo.svg/1200px-Diet_Coke_logo.svg.png'">
+            <div class="counter-text">Cokes consumed: <span id="cokeCount">0</span></div>
+            <button onclick="increaseCoke()">+1 Diet Coke</button>
+        </div>
 
-    <div class="dashboard-grid">
-        <div class="quarter-card">
-            <h3>Live Stream</h3>
+        <div class="box" id="box2">
+            <div id="regions_div" style="width: 100%; height: 80%;"></div>
+            <div class="map-controls">
+                <select id="countrySelect">
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="FR">France</option>
+                    <option value="BR">Brazil</option>
+                    <option value="JP">Japan</option>
+                    <option value="ZA">South Africa</option>
+                </select>
+                <button onclick="updateMap()">Confirm</button>
+            </div>
+        </div>
+
+        <div class="box" id="box3">
             <iframe src="https://www.youtube.com/embed/T4XZmMPQ9Kw" allowfullscreen></iframe>
         </div>
 
-        <div class="quarter-card">
-            <h3>Travel Map</h3>
-            <select id="country-select">
-                <option value="">-- Add Visited Country --</option>
-            </select>
-            <div id="world-map"></div>
-            <p class="mt-2">Countries Visited: <span id="visit-count" class="font-weight-bold">0</span></p>
+        <div class="box" id="box4">
+            <div class="ig-container">
+                <a href="https://www.instagram.com/rachelapajak target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-size: 20px; display: flex; flex-direction: column; align-items: center;">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor" style="margin-bottom: 10px;">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                    </svg>
+                    View @mel14sky on Instagram
+                </a>
+            </div>
         </div>
 
-        <div class="quarter-card">
-            <h3>Socials</h3>
-            <a href="https://www.instagram.com/mel14sky" target="_blank">
-                <img src="Instagram_logo.png" alt="Instagram Logo" class="social-icon">
-            </a>
-            <p class="mt-3">@rachelapajak</p>
-        </div>
-
-        <div class="quarter-card coke-card">
-            <h3>Diet Coke Tracker</h3>
-            <div class="coke-display" id="coke-count">0</div>
-            <button class="coke-btn" onclick="addCoke()">+ Add a Can</button>
-            <p class="text-muted mt-2"><small>Daily Intake Tracker</small></p>
-        </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
-
-<script>
-    // 1. Diet Coke Counter Logic
-    let count = 0;
-    function addCoke() {
-        count++;
-        document.getElementById('coke-count').innerText = count;
-    }
-
-    // 2. Map Initialization
-    const visitedCountries = new Set();
-    const countrySelect = document.getElementById('country-select');
-
-    // Sample list of countries
-    const countries = { "AF": "Afghanistan", "AL": "Albania", "DZ": "Algeria", "AR": "Argentina", "AU": "Australia", "AT": "Austria", "BE": "Belgium", "BR": "Brazil", "CA": "Canada", "CN": "China", "FR": "France", "DE": "Germany", "IN": "India", "IT": "Italy", "JP": "Japan", "MX": "Mexico", "PL": "Poland", "ES": "Spain", "GB": "United Kingdom", "US": "United States" };
-
-    Object.entries(countries).forEach(([code, name]) => {
-        const opt = document.createElement('option');
-        opt.value = code; opt.textContent = name;
-        countrySelect.appendChild(opt);
-    });
-
-    const map = new jsVectorMap({
-        selector: '#world-map',
-        map: 'world',
-        regionStyle: { initial: { fill: '#d1d5db' }, selected: { fill: '#3498db' } },
-    });
-
-    countrySelect.addEventListener('change', (e) => {
-        const code = e.target.value;
-        if (code && !visitedCountries.has(code)) {
-            visitedCountries.add(code);
-            map.addRegions([code]);
-            document.getElementById('visit-count').textContent = visitedCountries.size;
+    <script>
+        // --- BOX 1 SCRIPT: Diet Coke Counter ---
+        let count = 0;
+        function increaseCoke() {
+            count++;
+            document.getElementById('cokeCount').innerText = count;
         }
-    });
-</script>
 
+        // --- BOX 2 SCRIPT: Google GeoChart ---
+        google.charts.load('current', {
+            'packages':['geochart'],
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
+
+        let chart, data, options;
+        let mapDataArray = [['Country', 'Selected']]; 
+
+        function drawRegionsMap() {
+            data = google.visualization.arrayToDataTable(mapDataArray);
+            
+            options = {
+                colorAxis: {colors: ['#e0e0e0', '#ffcc00']}, 
+                backgroundColor: '#ffffff',
+                datalessRegionColor: '#f4f4f9',
+                defaultColor: '#f5f5f5',
+                legend: 'none'
+            };
+
+            chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+            chart.draw(data, options);
+        }
+
+        function updateMap() {
+            const selectedCountry = document.getElementById('countrySelect').value;
+            
+            mapDataArray = [
+                ['Country', 'Selected'],
+                [selectedCountry, 1] 
+            ];
+            
+            data = google.visualization.arrayToDataTable(mapDataArray);
+            chart.draw(data, options);
+        }
+    </script>
 </body>
 </html>
